@@ -1,7 +1,9 @@
 import re
+import sys
 
 def main():
-    file = open("10.txt","r")
+    filename = sys.argv[1]
+    file = open(filename,"r")
     new1 = open("terms.txt","w")
     new2 = open("pdates.txt","w")
     new3 = open("prices.txt","w")
@@ -95,7 +97,8 @@ def main():
         
 
 
-main()
+if __name__ == "__main__":
+    main()
     
     
     

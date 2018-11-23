@@ -1,0 +1,4 @@
+<article key="journals/pvldb/SikkaFGL13"><author>Vishal Sikka</author><author>Franz F&auml;rber</author><author>Anil K. Goel</author><author>Wolfgang Lehner</author><title>SAP HANA
+ The Evolution from a Modern Main-Memory Data Platform to an Enterprise Application Platform.</title><pages>1184-1185</pages><year>2013</year><journal>PVLDB</journal></article>
+<inproceedings key="journals/lncs/Comon94"><author>Hubert Comon</author><title>Constraints in Term Algebras
+ An Overview of Constraint Solving Techniques</title><pages>62-67</pages><booktitle>Constraint Programming</booktitle><year>1994</year></inproceedings>

@@ -13,10 +13,14 @@ def main():
     os.system("mv recs_temp.txt recs.txt")
     os.system("mv terms_temp.txt terms.txt")
     os.system("mv years_temp.txt years.txt")
+
+    os.system("db_load -c -T -t hash -f recs.txt re.idx")
+    os.system("db_load -c -T -t btree -f terms.txt te.idx")
+    os.system("db_load -c -T -t btree -f years.txt ye.idx")
     
-    os.system("db_load -c duplicates=1 -T -t hash -f recs.txt re.idx")
-    os.system("db_load -c duplicates=1 -T -t btree -f terms.txt te.idx")
-    os.system("db_load -c duplicates=1 -T -t btree -f years.txt ye.idx")
+#    os.system("db_load -c duplicates=0 -T -t hash -f recs.txt re.idx")
+#    os.system("db_load -c duplicates=0 -T -t btree -f terms.txt te.idx")
+#    os.system("db_load -c duplicates=0 -T -t btree -f years.txt ye.idx")
     
 if __name__ == "__main__":
     main()
