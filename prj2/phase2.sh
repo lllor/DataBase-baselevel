@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clear
-echo "sort stared"
+echo "sort started"
 sort -u -o test.text test.text
 sort -u -o terms.txt terms.txt
 sort -u -o prices.txt prices.txt
@@ -9,7 +9,7 @@ sort -u -o pdates.txt pdates.txt
 sort -u -o ads.txt ads.txt
 echo "===========sort ended=============="
 
-echo "break stared"
+echo "break started"
 perl break.pl< pdates.txt > pd_temp.txt
 perl break.pl< ads.txt > a_temp.txt
 perl break.pl< prices.txt > p_temp.txt
