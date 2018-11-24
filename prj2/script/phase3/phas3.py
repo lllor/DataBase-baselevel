@@ -36,27 +36,64 @@ def search(query,type):
 	flag = 0 #use to determine whether this is a longterm condtion(ie. date <= 2018/11/05)
 	count = 0
 	whitespce = [' ','\r','\t','\f','\v']
+	keywords = ['date','cat','price','location']
+
+	keychar = ['=','<','>','<=','>=']
 	for i in range(len(query)):
-		if query[i] == ' ' and query[i-1] not in whitespce:
-			q += '産'
-		if query[i] == '\r' and query[i-1] not in whitespce:
-			q += '産'
-		if query[i] == '\t' and query[i-1] not in whitespce:
-			q += '産'
-		if query[i] == '\f' and query[i-1] not in whitespce:
-			q += '産'
-		if query[i] == '\v' and query[i-1] not in whitespce:
+		if query[i] in whitespce and query[i-1] not in whitespce:
 			q += '産'
 		if query[i] in whitespce:
 			continue
 		else:
 			q += query[i]
-
-	print(q)
 	
-	querys = q.split('産')
+	conditions = q.split('産')
 	result = {}
+	print(conditions)
+	
+	querys=[]
+	for i in range(len(conditions)):
+		if conditions[i] in keychar:
+			querys.append(conditions[i-1]+conditions[i]+conditions[i+1])
+			flag = 1
+		elif flag == 1:
+			flag = 0
+			continue
+		elif conditions[i] not in keywords:
+			querys.append(conditions[i])
+
+
+
+
 	print(querys)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#	for i in conditions:
+#		if each == "output=full":
+ #           count -= 1
+#            continue
+#        elif each == "output=key":
+#            count -= 1
+#            continue
+
+        
+
 
 def main():
 	global db_terms, db_ads, db_dates, db_prices
