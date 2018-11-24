@@ -31,11 +31,8 @@ def createDB():
 	db_prices.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
 
-def from_file():
+def search():
 	
-
-
-def from_input():
 
 def main():
 	global db_terms, db_ads, db_dates, db_prices
@@ -49,13 +46,25 @@ def main():
 		if decision == '1':
 			from_file()
 			input_filename = str(input("Please enter the inout file name: "))
-			output_filename = str(input("Please enter the output file name: "))
+			#output_filename = str(input("Please enter the output file name: "))
 			input_file = open(input_filename,"r")
-			output_file = open(output_filename,"w")
+			output_file = open("output.txt","w")
+
+			for eachline in input_file:
+				search(eachline[:-1])
+
+			input_file.close()
+			output_file.close()
+
 		
 		elif decision == '2':
-			from_input()
-		
+			query = input("Enter your query: ").lower()
+			type_out = input("Enter the output formate: ").lower()
+			while query != '':
+				search(query)
+				query = input("Enter your query: ").lower()
+			print("Bye~")
+
 		decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
 
 
