@@ -18,34 +18,100 @@ def createDB():
 	db_terms = db.DB()
 	db_terms.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_terms.open("te.idx", None, db.DB_BTREE, db.DB_CREATE)
+	cur_terms = db_terms.cursor()
 
 	db_ads = db.DB()
 	db_ads.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_ads.open("ad.idx", None, db.DB_HASH, db.DB_CREATE)
+	cur_ads = db_ads.cursor()
 
 	db_dates = db.DB()
 	db_dates.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_dates.open("da.idx", None, db.DB_BTREE, db.DB_CREATE)
+	cur_dates = db_dates.cursor()
 
 	db_prices = db.DB()
 	db_prices.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
+	cur_prices = db_prices.cursor()
+
+def search_date(query):
+	global cur_dates
+	print(query)
+	output =[]
+	condition = query[:2]
+	print(condition)
+	#condition = query[0]
+	#date = query[]
+	
+
+	if condition[1] == "=":
+		if condition[0] == '<':
+			print('<=')
+			return
+		elif condition[0] == '>':
+			print('>=')
+			return
+		'''
+		date = date.encode('utf-8')
+		try:
+			result = cur_dates.set(date)
+			output.append(result[1].decode('utf-8'))
+		except:
+			return output
+		while True:
+			try:
+				date_next = cur_dates.next()
+				if date_next[0]!=date:
+					output.append(date_next[1].decode('utf-8'))
+			except:
+				return output
+		'''
+	elif condition[0] == '=':
+		date = query[1:]
+		print("=")
+		date = date.encode('utf-8')
+		try:
+			result = cur_dates.set(date)
+			output.append(result[1].decode('utf-8'))
+		except:
+			return output
+		while True:
+			try:
+				date_next = cur_dates.next()
+				if date_next[0]!=date:
+					output.append(date_next[1].decode('utf-8'))
+			except:
+				return outpu
+		return
+	elif condition[0] == '<':
+		print("<")
+		return
+	elif condition[0] == '>':
+		print(">")
+		return
+	#if condition == "<":
+	#if condition == ">":	
+	#if condition == "<=":
+	#if condition == ">=":	
 
 def search(query,type):
-	query = re.sub(r'\s+',' ',query)
+	query = re.sub(r'\s+','',query)
 	#print(query)
 	keywords = ['date','cat','price','location']
 	whitespce = [' ','\r','\t','\f','\v']
 	query_temp = query
+	
+
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
 		print("Date: ")
-		print(date)
+		#print(date)
 		for i in date:
 			query_temp = query_temp.replace(i,' ')
-
-
-
+			output = search_date(i[4:])
+			print(output) 
+	
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
 		
@@ -56,7 +122,6 @@ def search(query,type):
 	
 	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
-		
 		print("location: ")
 		print(location)
 		for i in location:
@@ -64,13 +129,13 @@ def search(query,type):
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
-		
 		print("cat: ")
 		print(cat)
 		for i in cat:
 			query_temp = query_temp.replace(i,' ')
 
 	terms = query_temp.split()
+
 	for term in terms:
 		if term!='' and term != 'output=brief' and term != 'output=full':
 			print(term)
@@ -78,7 +143,83 @@ def search(query,type):
 			output_type = 1
 		elif term == 'output=full':
 			output_type = 2
-	#z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
+	
+
+	
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+        
+
+
+def main():
+	global db_terms, db_ads, db_dates, db_prices
+	global cur_terms, cur_ads, cur_dates, cur_prices
+
+	createDB()
+
+	decision = str(input("1. Read from file.\n2. Read from input\n3. Quite\n Enter:\t"))
+
+	while decision != '3':
+		if decision == '1':
+			from_file()
+			input_filename = str(input("Please enter the inout file name: "))
+			#output_filename = str(input("Please enter the output file name: "))
+			input_file = open(input_filename,"r")
+			output_file = open("output.txt","w")
+
+			for eachline in input_file:
+				search(eachline[:-1],1)#type=1:print answer to outputfile
+
+			input_file.close()
+			output_file.close()
+
+		
+		elif decision == '2':
+			query = input("Enter your query: ").lower()
+			type_out = input("Enter the output formate: ").lower()
+			#while query != '':
+			search(query,2)#type=2: print answer to termianl
+				#query = input("Enter your query: ").lower()
+			print("Bye~")
+
+		decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
+
+
+
+	cur_prices.close()
+	db_prices.close()
+
+	cur_dates.close()
+	db_dates.close()
+
+	cur_ads.close()
+	db_ads.close()
+
+	cur_terms.close()
+	db_terms.close()
+
+
+
+
+if __name__ == "__main__":
+    main()
+
+ #z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
 	#z = re.match("[.\s]*date[>=<]+\d{4}\d{2}\d{2}",query)
 	
 '''
@@ -132,76 +273,4 @@ def search(query,type):
 
 		elif re.match('[\s]+date[>=<\s]+\d{4}+[\/]+\d{2}+[\/]+\d{2}+[\s]+'):
 			print()
-'''
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-        
-
-
-def main():
-	global db_terms, db_ads, db_dates, db_prices
-	global cur_terms, cur_ads, cur_dates, cur_prices
-
-	#createDB()
-
-	decision = str(input("1. Read from file.\n2. Read from input\n3. Quite\n Enter:\t"))
-
-	while decision != '3':
-		if decision == '1':
-			from_file()
-			input_filename = str(input("Please enter the inout file name: "))
-			#output_filename = str(input("Please enter the output file name: "))
-			input_file = open(input_filename,"r")
-			output_file = open("output.txt","w")
-
-			for eachline in input_file:
-				search(eachline[:-1],1)#type=1:print answer to outputfile
-
-			input_file.close()
-			output_file.close()
-
-		
-		elif decision == '2':
-			query = input("Enter your query: ").lower()
-			type_out = input("Enter the output formate: ").lower()
-			#while query != '':
-			search(query,2)#type=2: print answer to termianl
-				#query = input("Enter your query: ").lower()
-			print("Bye~")
-
-		decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
-
-
-
-	#cur_prices.close()
-	#db_prices.close()
-
-	#cur_dates.close()
-	#db_dates.close()
-
-	#cur_ads.close()
-	#db_ads.close()
-
-	#cur_terms.close()
-	#db_terms.close()
-
-
-
-
-if __name__ == "__main__":
-    main()
+'''   
