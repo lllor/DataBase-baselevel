@@ -32,15 +32,39 @@ def createDB():
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
 
 def search(query,type):
+	q = ''
+	flag = 0 #use to determine whether this is a longterm condtion(ie. date <= 2018/11/05)
+	count = 0
+	whitespce = [' ','\r','\t','\f','\v']
+	for i in range(len(query)):
+		if query[i] == ' ' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+			q += '産'
+		if query[i] == '\r' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+			q += '産'
+		if query[i] == '\t' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+			q += '産'
+		if query[i] == '\f' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+			q += '産'
+		if query[i] == '\v' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+			q += '産'
+		if query[i] in whitespce:
+			continue
+		else:
+			q += query[i]
+
+	print(q)
 	
+	querys = q.split('産')
+	result = {}
+	print(querys)
 
 def main():
 	global db_terms, db_ads, db_dates, db_prices
 	global cur_terms, cur_ads, cur_dates, cur_prices
 
-	createDB()
+	#createDB()
 
-	decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
+	decision = str(input("1. Read from file.\n2. Read from input\n3. Quite\n Enter:\t"))
 
 	while decision != '3':
 		if decision == '1':
@@ -60,26 +84,26 @@ def main():
 		elif decision == '2':
 			query = input("Enter your query: ").lower()
 			type_out = input("Enter the output formate: ").lower()
-			while query != '':
-				search(query,2)#type=2: print answer to termianl
-				query = input("Enter your query: ").lower()
+			#while query != '':
+			search(query,2)#type=2: print answer to termianl
+				#query = input("Enter your query: ").lower()
 			print("Bye~")
 
 		decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
 
 
 
-	cur_prices.close()
-	db_prices.close()
+	#cur_prices.close()
+	#db_prices.close()
 
-	cur_dates.close()
-	db_dates.close()
+	#cur_dates.close()
+	#db_dates.close()
 
-	cur_ads.close()
-	db_ads.close()
+	#cur_ads.close()
+	#db_ads.close()
 
-	cur_terms.close()
-	db_terms.close()
+	#cur_terms.close()
+	#db_terms.close()
 
 
 
