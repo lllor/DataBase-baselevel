@@ -32,10 +32,20 @@ def createDB():
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
 
 def search(query,type):
-	print(query)
-	z = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
-	if z:
-		print(z.groups())
+	#print(query)
+	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
+	if date:
+		print("date: "+date.groups())
+	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
+	if price:
+		print("Price: "+price.groups())
+	location = re.finall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
+	if location:
+		print("location: "+location.groups())
+	cat = re.finall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
+	if cat:
+		print("cat: "+cat.groups())
+	
 
 	#z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
 	#z = re.match("[.\s]*date[>=<]+\d{4}\d{2}\d{2}",query)
