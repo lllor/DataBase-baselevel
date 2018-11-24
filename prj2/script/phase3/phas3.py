@@ -31,7 +31,7 @@ def createDB():
 	db_prices.set_flags(db.DB_DUP) #declare duplicates allowed before you create the database
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
 
-def search():
+def search(query,type):
 	
 
 def main():
@@ -51,7 +51,7 @@ def main():
 			output_file = open("output.txt","w")
 
 			for eachline in input_file:
-				search(eachline[:-1])
+				search(eachline[:-1],1)#type=1:print answer to outputfile
 
 			input_file.close()
 			output_file.close()
@@ -61,7 +61,7 @@ def main():
 			query = input("Enter your query: ").lower()
 			type_out = input("Enter the output formate: ").lower()
 			while query != '':
-				search(query)
+				search(query,2)#type=2: print answer to termianl
 				query = input("Enter your query: ").lower()
 			print("Bye~")
 
