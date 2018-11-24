@@ -37,39 +37,51 @@ def createDB():
 
 def search_date(query):
 	global cur_dates
-	print(query)
+	
 	output =[]
 	condition = query[:2]
-	print(condition)
+
 	#condition = query[0]
 	#date = query[]
 	
 
 	if condition[1] == "=":
 		if condition[0] == '<':
-			print('<=')
-			return
-		elif condition[0] == '>':
-			print('>=')
-			return
-		'''
-		date = date.encode('utf-8')
-		try:
-			result = cur_dates.set(date)
-			output.append(result[1].decode('utf-8'))
-		except:
-			return output
-		while True:
-			try:
-				date_next = cur_dates.next()
-				if date_next[0]!=date:
-					output.append(date_next[1].decode('utf-8'))
-			except:
+			date = query[2:]
+
+			result = cur_dates.first()
+			if result[0].decode('utf-8') <= date:
+				output.append(result[1].decode('utf-8'))
+				date = date.encode('utf-8')
+				while True:
+					try:
+						date_next = cur_dates.next()
+						if date_next[0] > date:
+							return output
+						output.append(date_next[1].decode('utf-8'))
+					except:
+						return output
+			
+			else:
 				return output
-		'''
+		elif condition[0] == '>':
+			date = query[2:]
+			result = cur_dates.set_range(date.encode('utf-8'))
+			
+
+			if (result != None):
+				#print("1")
+				while (result != None):
+					print(result[0].decode('utf-8'), date)
+					if result[0].decode('utf-8') >= date:
+						output.append(result[1].decode('utf-8'))
+					result = cur_dates.next()
+				return output
+			else:
+				return output
+		
 	elif condition[0] == '=':
 		date = query[1:]
-		print("=")
 		date = date.encode('utf-8')
 		try:
 			result = cur_dates.set(date)
@@ -78,39 +90,100 @@ def search_date(query):
 			return output
 		while True:
 			try:
+				#print('yes')
 				date_next = cur_dates.next()
-				if date_next[0]!=date:
-					output.append(date_next[1].decode('utf-8'))
+				if date_next[0] != date:
+					return output	
+				output.append(date_next[1].decode('utf-8'))
 			except:
-				return outpu
-		return
+				return output
+#		return output
+	
 	elif condition[0] == '<':
-		print("<")
-		return
-	elif condition[0] == '>':
-		print(">")
-		return
-	#if condition == "<":
-	#if condition == ">":	
-	#if condition == "<=":
-	#if condition == ">=":	
+		date = query[1:]
+		
+		result = cur_dates.first()
+		if result[0].decode('utf-8') < date:
+			output.append(result[1].decode('utf-8'))
+			date = date.encode('utf-8')
+			while True:
+				try:
+					date_next = cur_dates.next()
+					if date_next[0] >= date:
+						return output
+					output.append(date_next[1].decode('utf-8'))
+				except:
+					return output
+			
+		else:
+			return output
 
+
+	elif condition[0] == '>':
+		date = query[1:]
+		print(">")
+		result = cur_dates.set_range(date.encode('utf-8'))
+		#
+
+		if (result != None):
+			#print("1")
+			while (result != None):
+				#print(result[0].decode('utf-8'), date)
+				if result[0].decode('utf-8') > date:
+					output.append(result[1].decode('utf-8'))
+				result = cur_dates.next()
+			return output
+		else:
+			return output
+	return
+def search_full(date_out):
+	global cur_ads
+	full = []
+	for each in date_out:
+		terms = each.split(',')
+		ad_id = terms[0]
+		r = cur_ads.set(ad_id.encode('utf-8'))
+		result = r[1].decode('utf-8')
+		date = re.findall(r".*<date>([.]*.*)<[\/]date>.*",result)
+		#print(date)
+		loc = re.findall(r".*<loc>([.]*.*)<[\/]loc>.*",result)
+		cat = re.findall(r".*<cat>([.]*.*)<[\/]cat>.*",result)
+		ti = re.findall(r".*<ti>([.]*.*)<[\/]ti>.*",result)
+		desc = re.findall(r".*<desc>([.]*.*)<[\/]desc>.*",result)
+		price = str(re.findall(r".*<price>([.]*.*)<[\/]price>.*",result))
+		#print(date)
+		full.append(ad_id+','+date[0]+','+loc[0]+','+cat[0]+','+ti[0]+','+desc[0]+','+price[0]) 
+	
+	return full
+def search_breif(date_out):
+	global cur_ads
+	brief = []
+	for each in date_out:
+		terms = each.split(',')
+		ad_id = terms[0]
+		r = cur_ads.set(ad_id.encode('utf-8'))
+		result = r[1].decode('utf-8')
+		ti = re.findall(r".*<ti>([.]*.*)<[\/]ti>.*",result)
+		brief.append(ad_id+','+ti[0])
+	return brief
 def search(query,type):
 	query = re.sub(r'\s+','',query)
 	#print(query)
 	keywords = ['date','cat','price','location']
 	whitespce = [' ','\r','\t','\f','\v']
 	query_temp = query
-	
+	output_type = 0
+	date_out = []
+	price_out = []
 
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
 		print("Date: ")
-		#print(date)
 		for i in date:
 			query_temp = query_temp.replace(i,' ')
-			output = search_date(i[4:])
-			print(output) 
+			date_output = search_date(i[4:])
+			
+			#print(output) 
 	
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
@@ -135,37 +208,29 @@ def search(query,type):
 			query_temp = query_temp.replace(i,' ')
 
 	terms = query_temp.split()
+	print(terms)
 
 	for term in terms:
 		if term!='' and term != 'output=brief' and term != 'output=full':
 			print(term)
 		elif term == 'output=brief':
-			output_type = 1
+			output_type = 0
 		elif term == 'output=full':
 			output_type = 2
 	
+	if output_type == 0:
+		#print("date_out")
+		brief = search_breif(date_out)
+		for each in brief:
+			each = each.split(',')
+			print('id: %s\ndate: %s'%(each[0],each[1]))
+	elif output_type ==2:
+		full = search_full(date_out)
+		for each in full:
+			each = each.split(',')
+			print('id: %s\ndate: %s\nloc: %s\ncat: %s\ntitle: %s\ndesc: %s\nprice: %s\n'%(each[0],each[1],each[2],each[3],each[4],each[5],each[6])) 
 
-	
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-        
-
-
+	return
 def main():
 	global db_terms, db_ads, db_dates, db_prices
 	global cur_terms, cur_ads, cur_dates, cur_prices
@@ -190,8 +255,9 @@ def main():
 
 		
 		elif decision == '2':
-			query = input("Enter your query: ").lower()
-			type_out = input("Enter the output formate: ").lower()
+			#query = input("Enter your query: ").lower()
+			#type_out = input("Enter the output formate: ").lower()
+			query = 'date < 2018/11/06		output=brief'
 			#while query != '':
 			search(query,2)#type=2: print answer to termianl
 				#query = input("Enter your query: ").lower()
