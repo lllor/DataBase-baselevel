@@ -34,28 +34,40 @@ def createDB():
 def search(query,type):
 	#print(query)
 	keywords = ['date','cat','price','location']
+	whitespce = [' ','\r','\t','\f','\v']
+	query_temp = query
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
-		print("date: "+date)
+		print("date: ")
+		print(date)
+		for i in date:
+			query_temp = query_temp.replace(i,' ')
+	
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
-		print("Price: "+price)
-	location = re.finall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
+		print("Price: ")
+		print(price)
+		for i in price:
+			query_temp = query_temp.replace(i,' ')
+	
+	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
-		print("location: "+location)
-	cat = re.finall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
+		print("location: ")
+		print(location)
+		for i in location:
+			query_temp = query_temp.replace(i,' ')
+	
+	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
 		print("cat: "+cat)
-	
-	terms = query.split()
-	for i in terms:
-		term =  re.finall(r"[.\s]*([0-9a-zA-Z_-]*)[\s]*",query)
-		if term:
-			for each in term:
-				if each not in keywords:
-					print("term: "+each)
+		print(cat)
+		for i in cat:
+			query_temp = query_temp.replace(i,' ')
 
-
+	terms = query_temp.split()
+	for term in terms:
+		if term!='':
+			print(term)
 
 	#z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
 	#z = re.match("[.\s]*date[>=<]+\d{4}\d{2}\d{2}",query)
