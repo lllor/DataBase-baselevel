@@ -33,19 +33,29 @@ def createDB():
 
 def search(query,type):
 	#print(query)
+	keywords = ['date','cat','price','location']
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
-		print("date: "+date.groups())
+		print("date: "+date)
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
-		print("Price: "+price.groups())
+		print("Price: "+price)
 	location = re.finall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
-		print("location: "+location.groups())
+		print("location: "+location)
 	cat = re.finall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
-		print("cat: "+cat.groups())
+		print("cat: "+cat)
 	
+	terms = query.split()
+	for i in terms:
+		term =  re.finall(r"[.\s]*([0-9a-zA-Z_-]*)[\s]*",query)
+		if term:
+			for each in term:
+				if each not in keywords:
+					print("term: "+each)
+
+
 
 	#z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
 	#z = re.match("[.\s]*date[>=<]+\d{4}\d{2}\d{2}",query)
