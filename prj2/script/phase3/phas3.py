@@ -37,15 +37,15 @@ def search(query,type):
 	count = 0
 	whitespce = [' ','\r','\t','\f','\v']
 	for i in range(len(query)):
-		if query[i] == ' ' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+		if query[i] == ' ' and query[i-1] not in whitespce:
 			q += '産'
-		if query[i] == '\r' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+		if query[i] == '\r' and query[i-1] not in whitespce:
 			q += '産'
-		if query[i] == '\t' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+		if query[i] == '\t' and query[i-1] not in whitespce:
 			q += '産'
-		if query[i] == '\f' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+		if query[i] == '\f' and query[i-1] not in whitespce:
 			q += '産'
-		if query[i] == '\v' and query[i-1] not in whitespce:#for query[i] =='\r' or query[i] =='\t' or query[i] =='\f' or query[i] =='\v') and (query[i-1] != [:
+		if query[i] == '\v' and query[i-1] not in whitespce:
 			q += '産'
 		if query[i] in whitespce:
 			continue
