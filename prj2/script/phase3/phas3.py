@@ -32,19 +32,23 @@ def createDB():
 	db_prices.open("pr.idx", None, db.DB_BTREE, db.DB_CREATE)
 
 def search(query,type):
+	query = re.sub(r'\s+',' ',query)
 	#print(query)
 	keywords = ['date','cat','price','location']
 	whitespce = [' ','\r','\t','\f','\v']
 	query_temp = query
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
-		print("date: ")
+		print("Date: ")
 		print(date)
 		for i in date:
 			query_temp = query_temp.replace(i,' ')
-	
+
+
+
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
+		
 		print("Price: ")
 		print(price)
 		for i in price:
@@ -52,6 +56,7 @@ def search(query,type):
 	
 	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
+		
 		print("location: ")
 		print(location)
 		for i in location:
@@ -59,16 +64,20 @@ def search(query,type):
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
-		print("cat: "+cat)
+		
+		print("cat: ")
 		print(cat)
 		for i in cat:
 			query_temp = query_temp.replace(i,' ')
 
 	terms = query_temp.split()
 	for term in terms:
-		if term!='':
+		if term!='' and term != 'output=brief' and term != 'output=full':
 			print(term)
-
+		elif term == 'output=brief':
+			output_type = 1
+		elif term == 'output=full':
+			output_type = 2
 	#z = re.match("[.\s]*date[\s]*[<>=]?[\s]*\d{4}+[\/]\d{2}+[\/]{2}",query)
 	#z = re.match("[.\s]*date[>=<]+\d{4}\d{2}\d{2}",query)
 	
