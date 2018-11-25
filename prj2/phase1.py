@@ -78,8 +78,9 @@ def main():
                 pr = re.search(r'<price>(.*?)</price>',line)
             except AttributeError:
                 pr = None
-            s = " "*(12-len(pr.group(1)))
-            new3.write(s+pr.group(1)+":"+aid.group(1)+","+cat.group(1)+","+loc.group(1)+"\n")
+            #s = " "*(12-len(pr.group(1)))
+            #new3.write(s+pr.group(1)+":"+aid.group(1)+","+cat.group(1)+","+loc.group(1)+"\n")
+            new3.write(pr.group(1)+":"+aid.group(1)+","+cat.group(1)+","+loc.group(1)+"\n")
             
             
             
