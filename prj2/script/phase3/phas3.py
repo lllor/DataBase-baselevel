@@ -236,6 +236,41 @@ def search_price(query):
 	return
 
 
+def search_term(query):
+	output = []
+	term = query.decode("utf-8")
+	condition = term[-1]
+	
+	if condition == "%":
+		#partial matching
+		term = term[:-2]
+		pattern = re.compile(term+"*")
+		result = cur_terms.set_range(term.encode("utf-8"))
+	
+		if (result != None):
+			#print("1")
+			while (result != None):
+				#print(result[0].decode('utf-8'), term)
+				if pattern.match(result[0].decode('utf-8')) != None  :
+					output.append(result[1].decode('utf-8'))
+				result = cur_terms.next()
+			return output
+		else:
+			return output
+	else:
+		result = cur_terms.set(term.encode("utf-8"))
+		output.append(result[1].decode('utf-8') )
+		while True:
+			try:
+				term_next = cur_terms.next()
+				if term_next[0] != term:
+					return output
+				output.append(term_next[1].decode('utf-8'))
+			except:
+				return output
+
+
+
 def search_full(date_out):
 	global cur_ads
 	full = []
@@ -397,11 +432,22 @@ def search(query,type):
 
 	for term in terms:
 		if term!='' and term != 'output=brief' and term != 'output=full':
-			print(term)
+			temp_out.append(search_term(term))
 		elif term == 'output=brief':
 			output_type = 0
 		elif term == 'output=full':
 			output_type = 2
+	k = 0
+	print(temp_out)
+	while(k<len(temp_out)):
+		if term_out==[]:
+			term_out = temp_out[k]
+		else:
+			term_out = list(set(temp_out[k]).intersection(term_out))
+		if term_out==[]:
+			break
+		k+=1
+	
 	
 
 	command_out = get_common(date_out,price_out,cat_out,term_out,loc_out)		
