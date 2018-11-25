@@ -2,11 +2,11 @@
 #sudo apt-get install db-util
 clear
 echo "sort stared"
-sort -u -o test.text test.text
 sort -u -o terms.txt terms.txt
 sort -u -o prices.txt prices.txt
 sort -u -o pdates.txt pdates.txt
 sort -u -o ads.txt ads.txt
+sort -n -o prices.txt prices.txt
 echo "===========sort ended=============="
 
 echo "break stared"
