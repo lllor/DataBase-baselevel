@@ -144,9 +144,9 @@ def search_price(query):
 	if condition[1] == "=":
 		if condition[0] == '<':
 			price = query[2:]
-			price = " "*(12-len(price))+price
+			#price = " "*(12-len(price))+price
 			result = cur_prices.first()
-			if result[0].decode('utf-8') <= price:
+			if int(result[0].decode('utf-8').strip()) <= price:
 				output.append(result[1].decode('utf-8'))
 				price = price.encode('utf-8')
 				while True:
@@ -424,7 +424,7 @@ def search(query,type):
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
 			i = re.sub(r'\s+','',i)
-			temp_out.append(search_loc(i[4:]))
+			temp_out.append(search_cat(i[4:]))
 		if len(temp_out)>1:
 			cat_out = []
 		else:
