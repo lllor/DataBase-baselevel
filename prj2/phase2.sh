@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#sudo apt-get install db-util
 clear
 echo "sort stared"
 sort -u -o test.text test.text
