@@ -227,10 +227,10 @@ def search_price(query):
 		#
 		print(result[0].decode('utf-8'))
 		if (result != None):
-			#print("1")
 			while (result != None):
 				#print(result[0].decode('utf-8'), price)
 				if result[0].decode('utf-8') > price:
+					
 					output.append(result[1].decode('utf-8'))
 				result = cur_prices.next()
 			return output
