@@ -268,6 +268,34 @@ def search_breif(date_out):
 def get_common(date_out,price_out,cat_out,term_out,loc_out):
 	result = list(set(date_out).intersection(price_out))
 	return result
+#BEGIN-----------------------------------------------------------------------------------------------------------
+def search_loc(query):
+    global cur_prices
+    
+    output = []
+    result = cur_prices.first()
+    while (result):
+        print(result)
+        if result[3].decode('utf-8')==query:
+            output.append(result[1].decode('utf-8'))
+        result = cur_prices.next()
+    
+    return output
+
+def search_cat(query):
+    global cur_prices
+    
+    output = []
+    result = cur_prices.first()
+    while (result):
+        print(result)
+        if result[2].decode('utf-8')==query:
+            output.append(result[1].decode('utf-8'))
+        result = cur_prices.next()
+    
+    return output
+#END-----------------------------------------------------------------------------------------------------------
+
 def search(query,type):
 	query = re.sub(r'\s+','',query)
 	#print(query)
@@ -275,6 +303,9 @@ def search(query,type):
 	whitespce = [' ','\r','\t','\f','\v']
 	query_temp = query
 	output_type = 0
+	#B-------------------------------------
+	c = 0 #count of conditions
+	#E-------------------------------------
 	
 	date_out = []
 	price_out = []
@@ -287,8 +318,12 @@ def search(query,type):
 	if date:
 		print("Date: ")
 		for i in date:
+			#B--------------------------------------------------------------------------------------------------------
+			c+=1
 			query_temp = query_temp.replace(i,' ')
-			date_output = search_date(i[4:])
+			date_output.append(search_date(i[4:]))
+			#E----------------------------------------------------------------------------------------------------------
+			#date_output=search_date(i[4:])
 	
 	
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
@@ -297,8 +332,14 @@ def search(query,type):
 		print("Price: ")
 		print(price)
 		for i in price:
+			#B----------------------------------------------------------------------------------------------------------
+			c+=1
 			query_temp = query_temp.replace(i,' ')
-			price_out = search_price(i[5:])
+			#CHANGED THIS TO APPEND, 如果multiple price condition，price > 20, price < 40, append instead of "="
+			price_out.append(search_prcies(i[5:]))
+			#E----------------------------------------------------------------------------------------------------------
+			#price_out=search_price(i[5:])
+		
 
 	
 	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
@@ -306,20 +347,31 @@ def search(query,type):
 		print("location: ")
 		print(location)
 		for i in location:
+			#B----------------------------------------------------------------------------------------------------------
+			c+=1
 			query_temp = query_temp.replace(i,' ')
+			loc_out.append(search_loc(i[10:]))
+			#E----------------------------------------------------------------------------------------------------------
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
 		print("cat: ")
 		print(cat)
 		for i in cat:
+			#B----------------------------------------------------------------------------------------------------------
+			c+=1
 			query_temp = query_temp.replace(i,' ')
+			cat_out = search_loc(i[4:])
+			#E----------------------------------------------------------------------------------------------------------
 
 	terms = query_temp.split()
 	print(terms)
 
 	for term in terms:
 		if term!='' and term != 'output=brief' and term != 'output=full':
+			#B--------------
+			c+=1
+			#E--------------
 			print(term)
 		elif term == 'output=brief':
 			output_type = 0
