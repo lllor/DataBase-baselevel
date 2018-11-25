@@ -357,6 +357,7 @@ def search(query,type):
 		for i in date:
 			#B--------------------------------------------------------------------------------------------------------
 			temp_out.append(search_date(i[4:]))
+			i = re.sub(r'\s+','',i)
 			query_temp = query_temp.replace(i,' ')
 		k = 0
 		print(temp_out)
@@ -381,6 +382,7 @@ def search(query,type):
 		for i in price:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
+			i = re.sub(r'\s+','',i)
 			temp_out.append(search_date(i[5:]))
 			#CHANGED THIS TO APPEND, 如果multiple price condition，price > 20, price < 40, append instead of "="
 		k = 0
@@ -406,6 +408,7 @@ def search(query,type):
 		for i in location:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
+			i = re.sub(r'\s+','',i)
 			temp_out.append(search_loc(i[10:]))
 		if len(temp_out)>1:
 			loc_out = []
@@ -420,6 +423,7 @@ def search(query,type):
 		for i in cat:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
+			i = re.sub(r'\s+','',i)
 			temp_out.append(search_loc(i[4:]))
 		if len(temp_out)>1:
 			cat_out = []
