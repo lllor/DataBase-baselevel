@@ -144,9 +144,9 @@ def search_price(query):
 	if condition[1] == "=":
 		if condition[0] == '<':
 			price = query[2:]
-			price = " "*(12-len(price))+price
+			#price = " "*(12-len(price))+price
 			result = cur_prices.first()
-			if result[0].decode('utf-8') <= price:
+			if int(result[0].decode('utf-8').strip()) <= price:
 				output.append(result[1].decode('utf-8'))
 				price = price.encode('utf-8')
 				while True:
@@ -162,7 +162,6 @@ def search_price(query):
 				return output
 		elif condition[0] == '>':
 			price = query[2:]
-			price = " "*(12-len(price))+price
 			result = cur_prices.set_range(price.encode('utf-8'))
 			
 
@@ -200,7 +199,6 @@ def search_price(query):
 	elif condition[0] == '<':
 		price = query[1:]
 		price = " "*(12-len(price))+price
-		
 		result = cur_prices.first()
 		if result[0].decode('utf-8') < price:
 			output.append(result[1].decode('utf-8'))
@@ -221,56 +219,61 @@ def search_price(query):
 	elif condition[0] == '>':
 		price = query[1:]
 		price = " "*(12-len(price))+price
-		print(price)
-		
-		
+		print(">")
 		result = cur_prices.set_range(price.encode('utf-8'))
 		#
-		print(result[0].decode('utf-8'))
-		if (result != None):
-			while (result != None):
 
-				print(result[0].decode('utf-8'), price)
+		if (result != None):
+			#print("1")
+			while (result != None):
+				#print(result[0].decode('utf-8'), price)
 				if result[0].decode('utf-8') > price:
 					output.append(result[1].decode('utf-8'))
 				result = cur_prices.next()
 			return output
 		else:
 			return output
-		
 	return
-def search_cat(query):
-	global cur_ads
 
-	print(query)
-	iter = cur_ads.first()
-	while (iter):
-		r = iter[1].decode('utf-8')
-		
-		cat = re.findall(r".*<cat>([.]*.*)<[\/]cat>.*",r)
-		#print(iter[0].decode('utf-8'))
 
-		if cat[0] == query:
-			r = iter[0].decode('utf-8')
-			result.append(r)
-		iter = cur_ads.next()
-	return result
-def search_loc(query):
-	global cur_ads
+def search_term(query):
+	output = []
+	term = query
+	condition = term[-1]
 
-	print(query)
-	iter = cur_ads.first()
-	while (iter):
-		r = iter[1].decode('utf-8')
-		
-		loc = re.findall(r".*<loc>([.]*.*)<[\/]loc>.*",r)
-		#print(iter[0].decode('utf-8'))
+	if condition == "%":
+		#partial matching
+		term = term[:-2]
+		pattern = re.compile(term.lower()+"*")
+		result = cur_terms.set_range(term.encode("utf-8"))
 
-		if loc[0] == query:
-			r = iter[0].decode('utf-8')
-			result.append(r)
-		iter = cur_ads.next()
-	return result
+		if (result != None):
+			#print("1")
+			while (result != None):
+				#print(result[0].decode('utf-8'), term)
+				if pattern.match(result[0].decode('utf-8').lower() ) != None  :
+					output.append(result[1].decode('utf-8').lower())
+				result = cur_terms.next()
+			return output
+		else:
+			return output
+	else:
+		result = cur_terms.set(term.encode("utf-8"))
+		output.append(result[1].decode('utf-8') )
+		#i = 1
+		while True:
+			try:
+				#print(i)
+				#i=i+1
+				term_next = cur_terms.next()
+				#print("here")
+				#print("The term next is " + term_next[0].decode('utf-8').lower()+" " +term.lower())
+				if term_next[0].decode('utf-8').lower() != term.lower():
+					#print("The term next is " + term_next[0].decode('utf-8').lower()+" " +term.lower())
+					return output
+				output.append(term_next[1].decode('utf-8').lower())
+			except:
+				return output
 
 def search_full(date_out):
 	global cur_ads
@@ -285,10 +288,10 @@ def search_full(date_out):
 		loc = re.findall(r".*<loc>([.]*.*)<[\/]loc>.*",result)
 		cat = re.findall(r".*<cat>([.]*.*)<[\/]cat>.*",result)
 		ti = re.findall(r".*<ti>([.]*.*)<[\/]ti>.*",result)
-		desc = re.findall(r".*<desc>([.]*.*)<[\/]desc>.*",result)
-		price = str(re.findall(r".*<price>([.]*.*)<[\/]price>.*",result))
-		#print(date)
-		full.append(ad_id+','+date[0]+','+loc[0]+','+cat[0]+','+ti[0]+','+desc[0]+','+price[0]) 
+		desc = re.findall(r".*<desc>([.\w]*.*)<[\/]desc>.*",result)
+		price = re.findall(r".*<price>([.\s]*.*)<[\/]price>.*",result)
+		
+		full.append(ad_id+'氪'+date[0]+'氪'+loc[0]+'氪'+cat[0]+'氪'+ti[0]+'氪'+desc[0]+'氪'+price[0]) 
 	
 	return full
 def search_breif(date_out):
@@ -304,16 +307,60 @@ def search_breif(date_out):
 	return brief
 
 def get_common(date_out,price_out,cat_out,term_out,loc_out):
-	result = set.intersection(*(set(x) for x in [date_out,price_out,cat_out,term_out,loc_out] if x))
-	#result = list(set(date_out).intersection(price_out))
+	result = []
+	try:
+		result = set.intersection(*(set(x) for x in [date_out,price_out,cat_out,term_out,loc_out] if x))
+		return result
+	except:
+		return result
+#BEGIN-----------------------------------------------------------------------------------------------------------
+def search_loc(query):
+	print(query)
+	result=[]
+	global cur_ads
+
+	iter = cur_ads.first()
+	while (iter):
+		r = iter[1].decode('utf-8')
+		
+		loc = re.findall(r".*<loc>([.]*.*)<[\/]loc>.*",r)
+		#print(iter[0].decode('utf-8'))
+
+		if loc[0] == query:
+			r = iter[0].decode('utf-8')
+			result.append(r)
+		iter = cur_ads.next()
 	return result
+
+
+def search_cat(query):
+	result=[]
+	global cur_ads
+
+	iter = cur_ads.first()
+	while (iter):
+		r = iter[1].decode('utf-8')
+		
+		cat = re.findall(r".*<cat>([.]*.*)<[\/]cat>.*",r)
+		#print(iter[0].decode('utf-8'))
+
+		if cat[0] == query:
+			r = iter[0].decode('utf-8')
+			result.append(r)
+		iter = cur_ads.next()
+	return result
+#END-----------------------------------------------------------------------------------------------------------
+
 def search(query,type):
-	query_temp = query
-	
+	#query = re.sub(r'\s+','',query)
+	#print(query)
 	keywords = ['date','cat','price','location']
 	whitespce = [' ','\r','\t','\f','\v']
-	print(query)
+	query_temp = query
 	output_type = 0
+	#B-------------------------------------
+	temp_out = []
+	#E-------------------------------------
 	
 	date_out = []
 	price_out = []
@@ -324,90 +371,133 @@ def search(query,type):
 
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
-		#print("Date: ")
+		print("Date: ")
 		for i in date:
-			query_temp = query_temp.replace(i,' ')
+			#B--------------------------------------------------------------------------------------------------------
+			temp_out.append(search_date(i[4:]))
 			i = re.sub(r'\s+','',i)
-			temp_out = []
-			output = search_date(i[4:])
-			k = 0
-			while(k<len(temp_out)):
-				if date_out==[] and k==0:
-					date_out = temp_out[k]
-				else:
-					date_out = list(set(temp_out[k]).intersection(date_out))
-				k+=1
-			temp_out = []
+			query_temp = query_temp.replace(i,' ')
+		k = 0
+		print(temp_out)
+		while(k<len(temp_out)):
+			if date_out==[]:
+				date_out = temp_out[k]
+			else:
+				date_out = list(set(temp_out[k]).intersection(date_out))
+			if date_out==[]:
+				break
+			k+=1
+		temp_out = []
+			#E----------------------------------------------------------------------------------------------------------
+			#date_output=search_date(i[4:])
+	
 	
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
+		
+		print("Price: ")
+		print(price)
 		for i in price:
+			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
-			temp_out = []
 			i = re.sub(r'\s+','',i)
 			temp_out.append(search_price(i[5:]))
-			k = 0
-			while(k<len(temp_out)):
-				if price_out==[] and k==0:
-					price_out = temp_out[k]
-				else:
-					price_out = list(set(temp_out[k]).intersection(price_out))
-				k+=1
-			temp_out = []
+			#CHANGED THIS TO APPEND, 如果multiple price condition，price > 20, price < 40, append instead of "="
+		k = 0
+		print(temp_out)
+		while(k<len(temp_out)):
+			if price_out==[]:
+				price_out = temp_out[k]
+			else:
+				price_out = list(set(temp_out[k]).intersection(price_out))
+			if price_out==[]:
+				break
+			k+=1
+		temp_out = []
+			#E----------------------------------------------------------------------------------------------------------
+			#price_out=search_price(i[5:])
 		
+
+	
 	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
-		if len(location)>=1:
-			loc_out = []
-		else:
-			for i in location:
-				query_temp = query_temp.replace(i,' ')
-				i = re.sub(r'\s+','',i)
-				output = search_loc(i[9:])
-				for out in output:
-					cat_out.append(out)
+		print("location: ")
+		print(location)
+		for i in location:
+			#B----------------------------------------------------------------------------------------------------------
+			query_temp = query_temp.replace(i,' ')
+			i = re.sub(r'\s+','',i)
+			temp_out.append(search_loc(i[9:]))
+		k = 0
+		#print(temp_out)
+		while(k<len(temp_out)):
+			if loc_out==[]:
+				loc_out = temp_out[k]
+			else:
+				loc_out = list(set(temp_out[k]).intersection(loc_out))
+			if loc_out==[]:
+				break
+			k+=1
+		temp_out = []
+			#E----------------------------------------------------------------------------------------------------------
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
-		#print(cat)
-		if len(cat) >= 1:
-			cat_out = []
-		else:
-			for i in cat:
-				query_temp = query_temp.replace(i,' ')
-				i = re.sub(r'\s+','',i)
-				output = search_cat(i[4:])
-				for out in output:
-					cat_out.append(out)
-			#print(cat_out)
+		print("cat: ")
+		print(cat)
+		for i in cat:
+			#B----------------------------------------------------------------------------------------------------------
+			query_temp = query_temp.replace(i,' ')
+			i = re.sub(r'\s+','',i)
+			temp_out.append(search_cat(i[4:]))
+		k = 0
+		#print(temp_out)
+		while(k<len(temp_out)):
+			if cat_out==[]:
+				cat_out = temp_out[k]
+			else:
+				cat_out = list(set(temp_out[k]).intersection(cat_out))
+			if cat_out==[]:
+				break
+			k+=1
+		temp_out = []#------------------------------------------------------------------------------------
 
-	#print(query_temp)
 	terms = query_temp.split()
 	#print(terms)
 
 	for term in terms:
 		if term!='' and term != 'output=brief' and term != 'output=full':
-			print(term)
-			pass
+			temp_out.append(search_term(term))
 		elif term == 'output=brief':
 			output_type = 0
 		elif term == 'output=full':
 			output_type = 2
+	k = 0
+	#print(temp_out)
+	while(k<len(temp_out)):
+		if term_out==[]:
+			term_out = temp_out[k]
+		else:
+			term_out = list(set(temp_out[k]).intersection(term_out))
+		if term_out==[]:
+			break
+		k+=1
+	
 	
 
 	command_out = get_common(date_out,price_out,cat_out,term_out,loc_out)		
-	
+
 
 	if output_type == 0:
 		#print("date_out")
 		brief = search_breif(command_out)
 		for each in brief:
-			each = each.split(',')
+			each = each.split('氪')
 			print('id: %s\ntitle: %s'%(each[0],each[1]))
 	elif output_type ==2:
 		full = search_full(command_out)
 		for each in full:
-			each = each.split(',')
+			each = each.split('氪')
 			print('id: %s\ndate: %s\nloc: %s\ncat: %s\ntitle: %s\ndesc: %s\nprice: %s\n'%(each[0],each[1],each[2],each[3],each[4],each[5],each[6])) 
 
 	return
@@ -418,36 +508,22 @@ def main():
 
 	createDB()
 
-	decision = str(input("1. Read from file.\n2. Read from input\n3. Quite\n Enter:\t"))
+	decision = str(input("1. Read from input\n2. Quit\n Enter:\t"))
 
-	while decision != '3':
+	while decision != '2':
 		if decision == '1':
-			from_file()
-			input_filename = str(input("Please enter the inout file name: "))
-			#output_filename = str(input("Please enter the output file name: "))
-			input_file = open(input_filename,"r")
-			output_file = open("output.txt","w")
-
-			for eachline in input_file:
-				search(eachline[:-1],1)#type=1:print answer to outputfile
-
-			input_file.close()
-			output_file.close()
-
-		
-		elif decision == '2':
 			#query = input("Enter your query: ").lower()
 			#type_out = input("Enter the output formate: ").lower()
-			query = 'price>8000	price<9000 date=2018/11/05 output=brief'
+			query = 'location =Edmonton	cat = camera-camcorder-lens  output=full'
 			#while query != '':
 			search(query,2)#type=2: print answer to termianl
 				#query = input("Enter your query: ").lower()
-			print("Bye~")
+			
 
-		decision = str(input("1. Read from file.\n2. Read from input\n3. Qui\n Enter:\t"))
+		decision = str(input("1. Read from input\n2. Quit\n Enter:\t"))
 
 
-
+	print("Bye~")
 	cur_prices.close()
 	db_prices.close()
 
@@ -476,7 +552,6 @@ if __name__ == "__main__":
 	whitespce = [' ','\r','\t','\f','\v']
 	keywords = ['date','cat','price','location']
 	keychar = ['=','<','>','<=','>=']
-
 	for i in range(len(query)):
 		if query[i] in whitespce and query[i-1] not in whitespce:
 			q += '産'
@@ -499,9 +574,7 @@ if __name__ == "__main__":
 			continue
 		elif conditions[i] not in keywords:
 			querys.append(conditions[i])
-
 	#print(querys)
-
 	for each in conditions:
 		if each == "output=full":
 			count -= 1
@@ -509,7 +582,6 @@ if __name__ == "__main__":
 		elif each == "output=key":
 			count -= 1
 			continue
-
 		elif re.match('\Adate',each):
 			date(each[4:])
 		elif re.match('\Aprice',each):
@@ -517,7 +589,6 @@ if __name__ == "__main__":
 		elif re.match('\Alocation',each):
 			location(each[9:])
 		else:
-
 		elif re.match('[\s]+date[>=<\s]+\d{4}+[\/]+\d{2}+[\/]+\d{2}+[\s]+'):
 			print()
-'''   
+''' 
