@@ -383,7 +383,7 @@ def search(query,type):
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
 			i = re.sub(r'\s+','',i)
-			temp_out.append(search_date(i[5:]))
+			temp_out.append(search_price(i[5:]))
 			#CHANGED THIS TO APPEND, 如果multiple price condition，price > 20, price < 40, append instead of "="
 		k = 0
 		print(temp_out)
