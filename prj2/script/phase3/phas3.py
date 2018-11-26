@@ -410,10 +410,17 @@ def search(query,type):
 			query_temp = query_temp.replace(i,' ')
 			i = re.sub(r'\s+','',i)
 			temp_out.append(search_loc(i[10:]))
-		if len(temp_out)>1:
-			loc_out = []
-		else:
-			loc_out = temp_out[0]
+		k = 0
+		print(temp_out)
+		while(k<len(temp_out)):
+			if loc_out==[]:
+				loc_out = temp_out[k]
+			else:
+				loc_out = list(set(temp_out[k]).intersection(loc_out))
+			if loc_out==[]:
+				break
+			k+=1
+		temp_out = []
 			#E----------------------------------------------------------------------------------------------------------
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
@@ -425,11 +432,17 @@ def search(query,type):
 			query_temp = query_temp.replace(i,' ')
 			i = re.sub(r'\s+','',i)
 			temp_out.append(search_cat(i[4:]))
-		if len(temp_out)>1:
-			cat_out = []
-		else:
-			cat_out = temp_out[0]
-			#E----------------------------------------------------------------------------------------------------------
+		k = 0
+		print(temp_out)
+		while(k<len(temp_out)):
+			if cat_out==[]:
+				cat_out = temp_out[k]
+			else:
+				cat_out = list(set(temp_out[k]).intersection(cat_out))
+			if cat_out==[]:
+				break
+			k+=1
+		temp_out = []------------------------------------------------------------------------------------
 
 	terms = query_temp.split()
 	print(terms)
