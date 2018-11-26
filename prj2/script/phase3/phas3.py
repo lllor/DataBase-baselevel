@@ -307,7 +307,7 @@ def search_breif(date_out):
 	return brief
 
 def get_common(date_out,price_out,cat_out,term_out,loc_out):
-	result = list(set(date_out).intersection(price_out))
+	result = set.intersection(*(set(x) for x in [date_out,price_out,cat_out,term_out,loc_out] if x))
 	return result
 #BEGIN-----------------------------------------------------------------------------------------------------------
 def search_loc(query):
