@@ -238,21 +238,21 @@ def search_price(query):
 
 def search_term(query):
 	output = []
-	term = query.decode("utf-8")
+	term = query
 	condition = term[-1]
-	
+
 	if condition == "%":
 		#partial matching
 		term = term[:-2]
-		pattern = re.compile(term+"*")
+		pattern = re.compile(term.lower()+"*")
 		result = cur_terms.set_range(term.encode("utf-8"))
-	
+
 		if (result != None):
 			#print("1")
 			while (result != None):
 				#print(result[0].decode('utf-8'), term)
-				if pattern.match(result[0].decode('utf-8')) != None  :
-					output.append(result[1].decode('utf-8'))
+				if pattern.match(result[0].decode('utf-8').lower() ) != None  :
+					output.append(result[1].decode('utf-8').lower())
 				result = cur_terms.next()
 			return output
 		else:
@@ -260,16 +260,20 @@ def search_term(query):
 	else:
 		result = cur_terms.set(term.encode("utf-8"))
 		output.append(result[1].decode('utf-8') )
+		#i = 1
 		while True:
 			try:
+				#print(i)
+				#i=i+1
 				term_next = cur_terms.next()
-				if term_next[0] != term:
+				#print("here")
+				#print("The term next is " + term_next[0].decode('utf-8').lower()+" " +term.lower())
+				if term_next[0].decode('utf-8').lower() != term.lower():
+					#print("The term next is " + term_next[0].decode('utf-8').lower()+" " +term.lower())
 					return output
-				output.append(term_next[1].decode('utf-8'))
+				output.append(term_next[1].decode('utf-8').lower())
 			except:
 				return output
-
-
 
 def search_full(date_out):
 	global cur_ads
