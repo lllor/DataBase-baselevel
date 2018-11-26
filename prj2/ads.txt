@@ -15,6 +15,6 @@
 1370676359
 <ad><aid>1370676359</aid><date>2018/11/07</date><loc>Edmonton</loc><cat>camera-camcorder-lens</cat><ti>Canon Macro Lens</ti><desc>Take your photography to the next level with the Canon 100mm Macro Lens, EF100 1-2.8 USM. This lens is in excellent, hardly used condition and takes amazing macro photos. It has been described as one</desc><price>525</price></ad>
 1385570526
-<ad><aid>1385570526</aid><date>2018/11/05</date><loc>Edmonton</loc><cat>camera-camcorder-lens</cat><ti>NIKON D3s amateur useage body for sale</ti><desc>This camera has been my main travel camera and has generated wonderful prints some of which are hanging on our walls in paper, canvas and aluminum. The resolution and the HDR capability of shooting</desc><price>0</price></ad>
+<ad><aid>1385570526</aid><date>2018/11/05</date><loc>Edmonton</loc><cat>camera-camcorder-lens</cat><ti>NIKON D3s amateur useage body for sale</ti><desc>This camera has been my main travel camera and has generated wonderful prints some of which are hanging on our walls in paper, canvas and aluminum. The resolution and the HDR capability of shooting</desc><price></price></ad>
 1396178670
 <ad><aid>1396178670</aid><date>2018/11/07</date><loc>Calgary</loc><cat>camera-camcorder-lens</cat><ti>Fuji X-H1 24MP Mirrorless Camera Like New</ti><desc>Fuji X-H1 24MP Mirrorless Camera Like New - purchased a few months ago from Henrys - Comes with box, manual and charger</desc><price>1600</price></ad>
