@@ -48,14 +48,18 @@ def search_date(query):
 
 			result = cur_dates.first()
 			if result[0].decode('utf-8') <= date:
-				output.append(result[1].decode('utf-8'))
+				id = result[1].decode('utf-8').split(',')
+				output.append(id[0])
+				#output.append(result[1].decode('utf-8'))
 				date = date.encode('utf-8')
 				while True:
 					try:
 						date_next = cur_dates.next()
 						if date_next[0] > date:
 							return output
-						output.append(date_next[1].decode('utf-8'))
+						id = date_next[1].decode('utf-8').split(',')
+						output.append(id[0])
+						#output.append(date_next[1].decode('utf-8'))
 					except:
 						return output
 			
@@ -71,7 +75,10 @@ def search_date(query):
 				while (result != None):
 					#print(result[0].decode('utf-8'), date)
 					if result[0].decode('utf-8') >= date:
-						output.append(result[1].decode('utf-8'))
+						id = result[1].decode('utf-8').split(',')
+						output.append(id[0])
+						#output.append(result[1].decode('utf-8'))
+
 					result = cur_dates.next()
 				return output
 			else:
@@ -82,7 +89,9 @@ def search_date(query):
 		date = date.encode('utf-8')
 		try:
 			result = cur_dates.set(date)
-			output.append(result[1].decode('utf-8'))
+			id = result[1].decode('utf-8').split(',')
+			output.append(id[0])
+			#output.append(result[1].decode('utf-8'))
 		except:
 			return output
 		while True:
@@ -90,8 +99,10 @@ def search_date(query):
 				#print('yes')
 				date_next = cur_dates.next()
 				if date_next[0] != date:
-					return output	
-				output.append(date_next[1].decode('utf-8'))
+					return output
+				id = date_next[1].decode('utf-8').split(',')
+				output.append(id[0])	
+				#output.append(date_next[1].decode('utf-8'))
 			except:
 				return output
 #		return output
@@ -101,14 +112,18 @@ def search_date(query):
 		
 		result = cur_dates.first()
 		if result[0].decode('utf-8') < date:
-			output.append(result[1].decode('utf-8'))
+			id = result[1].decode('utf-8').split(',')
+			output.append(id[0])
+			#output.append(result[1].decode('utf-8'))
 			date = date.encode('utf-8')
 			while True:
 				try:
 					date_next = cur_dates.next()
 					if date_next[0] >= date:
 						return output
-					output.append(date_next[1].decode('utf-8'))
+					id = date_next[1].decode('utf-8').split(',')
+					output.append(id[0])	
+					#output.append(date_next[1].decode('utf-8'))
 				except:
 					return output
 			
@@ -127,7 +142,9 @@ def search_date(query):
 			while (result != None):
 				#print(result[0].decode('utf-8'), date)
 				if result[0].decode('utf-8') > date:
-					output.append(result[1].decode('utf-8'))
+					id = result[1].decode('utf-8').split(',')
+					output.append(id[0])
+					#output.append(result[1].decode('utf-8'))
 				result = cur_dates.next()
 			return output
 		else:
@@ -144,17 +161,20 @@ def search_price(query):
 	if condition[1] == "=":
 		if condition[0] == '<':
 			price = query[2:]
-			#price = " "*(12-len(price))+price
+			price = " "*(12-len(price))+price
 			result = cur_prices.first()
 			if int(result[0].decode('utf-8').strip()) <= price:
-				output.append(result[1].decode('utf-8'))
+				id = result[1].decode('utf-8').split(',')
+				output.append(id[0])
 				price = price.encode('utf-8')
 				while True:
 					try:
 						price_next = cur_prices.next()
 						if price_next[0] > price:
 							return output
-						output.append(price_next[1].decode('utf-8'))
+						id = price_next[1].decode('utf-8').split(',')
+						output.append(id[0])
+						#output.append(price_next[1].decode('utf-8'))
 					except:
 						return output
 			
@@ -162,15 +182,16 @@ def search_price(query):
 				return output
 		elif condition[0] == '>':
 			price = query[2:]
+			price = " "*(12-len(price))+price
 			result = cur_prices.set_range(price.encode('utf-8'))
-			
-
 			if (result != None):
 				#print("1")
 				while (result != None):
 					#print(result[0].decode('utf-8'), price)
 					if result[0].decode('utf-8') >= price:
-						output.append(result[1].decode('utf-8'))
+						id = result[1].decode('utf-8').split(',')
+						output.append(id[0])
+						#output.append(result[1].decode('utf-8'))
 					result = cur_prices.next()
 				return output
 			else:
@@ -182,16 +203,19 @@ def search_price(query):
 		price = price.encode('utf-8')
 		try:
 			result = cur_prices.set(price)
-			output.append(result[1].decode('utf-8'))
+			id = result[1].decode('utf-8').split(',')
+			output.append(id[0])
+			#output.append(result[1].decode('utf-8'))
 		except:
 			return output
 		while True:
 			try:
-				#print('yes')
 				price_next = cur_prices.next()
 				if price_next[0] != price:
-					return output	
-				output.append(price_next[1].decode('utf-8'))
+					return output
+				id = price_next[1].decode('utf-8').split(',')
+				output.append(id[0])	
+				#output.append(price_next[1].decode('utf-8'))
 			except:
 				return output
 #		return output
@@ -201,14 +225,18 @@ def search_price(query):
 		price = " "*(12-len(price))+price
 		result = cur_prices.first()
 		if result[0].decode('utf-8') < price:
-			output.append(result[1].decode('utf-8'))
+			id = result[1].decode('utf-8').split(',')
+			output.append(id[0])
+			#output.append(result[1].decode('utf-8'))
 			price = price.encode('utf-8')
 			while True:
 				try:
 					price_next = cur_prices.next()
 					if price_next[0] >= price:
 						return output
-					output.append(price_next[1].decode('utf-8'))
+					id = price_next[1].decode('utf-8').split(',')
+					output.append(id[0])
+					#output.append(price_next[1].decode('utf-8'))
 				except:
 					return output
 			
@@ -309,7 +337,7 @@ def search_breif(date_out):
 def get_common(date_out,price_out,cat_out,term_out,loc_out):
 	result = []
 	try:
-		result = set.intersection(*(set(x) for x in [date_out,price_out,cat_out,term_out,loc_out] if x))
+		result = list(set.intersection(*(set(x) for x in [date_out,price_out,cat_out,term_out,loc_out] if x)))
 		return result
 	except:
 		return result
@@ -371,14 +399,15 @@ def search(query,type):
 
 	date = re.findall(r"[.\s]*(date[>=<\s]+\d\d\d\d[\/]\d\d[\/]\d\d)[\s]*",query)
 	if date:
-		print("Date: ")
+		#print("Date: ")
 		for i in date:
 			#B--------------------------------------------------------------------------------------------------------
-			temp_out.append(search_date(i[4:]))
-			i = re.sub(r'\s+','',i)
 			query_temp = query_temp.replace(i,' ')
+
+			i = re.sub(r'\s+','',i)
+			temp_out.append(search_date(i[4:]))
 		k = 0
-		print(temp_out)
+		#print(temp_out)
 		while(k<len(temp_out)):
 			if date_out==[]:
 				date_out = temp_out[k]
@@ -395,8 +424,8 @@ def search(query,type):
 	price = re.findall(r"[.\s]*(price[>=<\s]+\d*)[\s]*",query)
 	if price:
 		
-		print("Price: ")
-		print(price)
+		#print("Price: ")
+		#print(price)
 		for i in price:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
@@ -404,7 +433,7 @@ def search(query,type):
 			temp_out.append(search_price(i[5:]))
 			#CHANGED THIS TO APPEND, 如果multiple price condition，price > 20, price < 40, append instead of "="
 		k = 0
-		print(temp_out)
+		#print(temp_out)
 		while(k<len(temp_out)):
 			if price_out==[]:
 				price_out = temp_out[k]
@@ -421,8 +450,7 @@ def search(query,type):
 	
 	location = re.findall(r"[.\s]*(location[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if location:
-		print("location: ")
-		print(location)
+		#print(location)
 		for i in location:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
@@ -443,8 +471,8 @@ def search(query,type):
 	
 	cat = re.findall(r"[.\s]*(cat[=\s]+[0-9a-zA-Z_-]*)[\s]*",query)
 	if cat:
-		print("cat: ")
-		print(cat)
+		#print("cat: ")
+		#print(cat)
 		for i in cat:
 			#B----------------------------------------------------------------------------------------------------------
 			query_temp = query_temp.replace(i,' ')
@@ -483,10 +511,10 @@ def search(query,type):
 			break
 		k+=1
 	
-	
+	#print(price_out,cat_out,loc_out)
 
 	command_out = get_common(date_out,price_out,cat_out,term_out,loc_out)		
-
+	#print(command_out)
 
 	if output_type == 0:
 		#print("date_out")
@@ -513,8 +541,8 @@ def main():
 	while decision != '2':
 		if decision == '1':
 			#query = input("Enter your query: ").lower()
-			#type_out = input("Enter the output formate: ").lower()
-			query = 'location =Edmonton	cat = camera-camcorder-lens  output=full'
+			#type_out = input("Enter the output formate: ").lower()location =Edmonton	cat = camera-camcorder-lens price = 525 
+			query = 'date = 2018/11/07 location =Edmonton	cat = camera-camcorder-lens price = 525  output=full'
 			#while query != '':
 			search(query,2)#type=2: print answer to termianl
 				#query = input("Enter your query: ").lower()
